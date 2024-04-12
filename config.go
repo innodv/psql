@@ -15,43 +15,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 package psql
 
 import (
-	"github.com/spf13/viper"
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 // Config is the configuration of the Postgresql database
 type Config struct {
-	DBHost           string `mapstructure:"dbhost"`
-	DBPort           int    `mapstructure:"dbport"`
-	DBUser           string `mapstructure:"dbuser"`
-	DBPassword       string `mapstructure:"dbpassword"`
-	DBName           string `mapstructure:"dbname"`
-	MaxOpenConns     int    `mapstructure:"maxopenconns"`
-	MaxIdleConns     int    `mapstructure:"maxidleconns"`
-	MaxLifetimeConns int    `mapstructure:"maxlifetimeconns"`
+	DBHost           string `env:"DBHOST" env-default:"127.0.0.1"`
+	DBPort           int    `env:"DBPORT" env-default:"5432"`
+	DBUser           string `env:"DBUSER" env-default:"user"`
+	DBPassword       string `env:"DBPASSWORD" env-default:"password"`
+	DBName           string `env:"DBNAME" env-default:"user"`
+	MaxOpenConns     int    `env:"DB_MAX_OPEN" env-default:"5"`
+	MaxIdleConns     int    `env:"DB_MAX_IDLE" env-default:"2"`
+	MaxLifetimeConns int    `env:"DB_LIFETIME" env-default:"60"`
 }
 
 // NewConfig gets the PSQLConfig from viper
-func NewConfig(v *viper.Viper) (out Config, _ error) {
-	return out, v.Unmarshal(&out)
-}
-
-// SetConfig the env vars and defaults with viper
-func SetConfig(v *viper.Viper) {
-	v.BindEnv("dbhost", "DBHOST")
-	v.BindEnv("dbport", "DBPORT")
-	v.BindEnv("dbuser", "DBUSER")
-	v.BindEnv("dbpassword", "DBPASSWORD")
-	v.BindEnv("dbname", "DBNAME")
-	v.BindEnv("maxopenconns", "DB_MAX_OPEN")
-	v.BindEnv("maxidleconns", "DB_MAX_IDLE")
-	v.BindEnv("maxlifetimeconns", "DB_LIFETIME")
-
-	v.SetDefault("dbhost", "127.0.0.1")
-	v.SetDefault("dbport", 5432)
-	v.SetDefault("dbuser", "genesis")
-	v.SetDefault("dbpassword", "genesis")
-	v.SetDefault("dbname", "genesis")
-	v.SetDefault("maxopenconns", 5)
-	v.SetDefault("maxidleconns", 2)
-	v.SetDefault("maxlifetimeconns", 60)
+func NewConfig() (out Config, _ error) {
+	err := cleanenv.ReadEnv(&out)
+	return out, err
 }
