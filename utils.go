@@ -1,6 +1,7 @@
 package psql
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -14,4 +15,12 @@ func GetSQLColumns[T any]() []string {
 		}
 	}
 	return columns
+}
+
+func GetSQLColumnsQuoted[T any]() []string {
+	cols := GetSQLColumns[T]()
+	for i, col := range cols {
+		cols[i] = fmt.Sprintf("\"%s\"", col)
+	}
+	return cols
 }
