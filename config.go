@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 package psql
 
 import (
-	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/numbergroup/cleanenv"
 )
 
 // Config is the configuration of the Postgresql database

@@ -3,9 +3,9 @@ module github.com/innodv/psql
 go 1.22
 
 require (
-	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.10.9
+	github.com/numbergroup/cleanenv v1.7.0
 	github.com/sirupsen/logrus v1.9.3
 )
 
