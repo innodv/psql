@@ -24,3 +24,15 @@ func GetSQLColumnsQuoted[T any]() []string {
 	}
 	return cols
 }
+
+func GetPostgreSQLPreparedArgList(cols []string) string {
+	out := ""
+	for i := range cols {
+		if i == 0 {
+			out += "$1"
+		} else {
+			out += fmt.Sprintf(",$%d", i+1)
+		}
+	}
+	return out
+}
