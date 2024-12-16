@@ -28,8 +28,13 @@ import (
 )
 
 func OpenConnectionPool(conf Config, log logrus.Ext1FieldLogger) (*sqlx.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
 		conf.DBHost, conf.DBPort, conf.DBUser, conf.DBPassword, conf.DBName)
+	if conf.IsSSLEnabled() {
+		psqlInfo += fmt.Sprintf("sslmode=verify-ca sslkey=%s sslcert=%s sslrootcert=%s", conf.SSLKeyFile, conf.SSLCertFile, conf.SSLRootCertFile)
+	} else {
+		psqlInfo += " sslmode=disabled"
+	}
 	log.Info("Trying to connect to database...")
 	connection, err := sqlx.Open("postgres", psqlInfo)
 	if err != nil {

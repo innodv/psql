@@ -20,14 +20,23 @@ import (
 
 // Config is the configuration of the Postgresql database
 type Config struct {
-	DBHost           string `env:"DBHOST" env-default:"127.0.0.1"`
-	DBPort           int    `env:"DBPORT" env-default:"5432"`
-	DBUser           string `env:"DBUSER" env-default:"user"`
-	DBPassword       string `env:"DBPASSWORD" env-default:"password"`
-	DBName           string `env:"DBNAME" env-default:"user"`
-	MaxOpenConns     int    `env:"DB_MAX_OPEN" env-default:"5"`
-	MaxIdleConns     int    `env:"DB_MAX_IDLE" env-default:"2"`
-	MaxLifetimeConns int    `env:"DB_LIFETIME" env-default:"60"`
+	DBHost     string `env:"DBHOST" env-default:"127.0.0.1"`
+	DBPort     int    `env:"DBPORT" env-default:"5432"`
+	DBUser     string `env:"DBUSER" env-default:"user"`
+	DBPassword string `env:"DBPASSWORD" env-default:"password"`
+	DBName     string `env:"DBNAME" env-default:"user"`
+
+	SSLKeyFile      string `env:"DB_SSL_KEY_FILE" env-default:""`
+	SSLCertFile     string `env:"DB_SSL_CERT_FILE" env-default:""`
+	SSLRootCertFile string `env:"DB_SSL_ROOT_CERT_FILE" env-default:""`
+
+	MaxOpenConns     int `env:"DB_MAX_OPEN" env-default:"5"`
+	MaxIdleConns     int `env:"DB_MAX_IDLE" env-default:"2"`
+	MaxLifetimeConns int `env:"DB_LIFETIME" env-default:"60"`
+}
+
+func (c Config) IsSSLEnabled() bool {
+	return len(c.SSLKeyFile) != 0 && len(c.SSLCertFile) != 0 && len(c.SSLRootCertFile) != 0
 }
 
 // NewConfig gets the PSQLConfig from viper
