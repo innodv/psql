@@ -20,8 +20,10 @@ package psql
 
 import (
 	"fmt"
+	"os"
 	"time"
 
+	"github.com/cockroachdb/errors"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
@@ -31,7 +33,19 @@ func OpenConnectionPool(conf Config, log logrus.Ext1FieldLogger) (*sqlx.DB, erro
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
 		conf.DBHost, conf.DBPort, conf.DBUser, conf.DBPassword, conf.DBName)
 	if conf.IsSSLEnabled() {
-		psqlInfo += fmt.Sprintf(" sslmode=verify-ca sslkey=%s sslcert=%s sslrootcert=%s", conf.SSLKeyFile, conf.SSLCertFile, conf.SSLRootCertFile)
+		sslKeyData, err := os.ReadFile(conf.SSLKeyFile)
+		if err != nil {
+			return nil, errors.Wrap(err, "Couldn't read SSL key file")
+		}
+		sslCertData, err := os.ReadFile(conf.SSLCertFile)
+		if err != nil {
+			return nil, errors.Wrap(err, "Couldn't read SSL cert file")
+		}
+		sslRootCertData, err := os.ReadFile(conf.SSLRootCertFile)
+		if err != nil {
+			return nil, errors.Wrap(err, "Couldn't read SSL Root cert file")
+		}
+		psqlInfo += fmt.Sprintf(" sslmode=verify-ca sslinline=true sslkey='%s' sslcert='%s' sslrootcert='%s'", sslKeyData, sslCertData, sslRootCertData)
 	} else {
 		psqlInfo += " sslmode=disable"
 	}
