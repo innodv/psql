@@ -23,9 +23,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/cockroachdb/errors"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/numbergroup/errors"
 	"github.com/sirupsen/logrus"
 )
 
